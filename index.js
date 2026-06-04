@@ -23,7 +23,6 @@
  * Violations may result in DMCA takedown
  * or termination of the Telegram bot.
  */
- 
 
 const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
@@ -33,6 +32,11 @@ const {
 } = require("@sabir7718/log");
 
 const S7HaTeSY = process.env.BOT_TOKEN;
+
+if (!S7HaTeSY) {
+    console.log("❌ BOT_TOKEN Missing");
+    process.exit(1);
+}
 
 const SYHaTe = new TelegramBot(S7HaTeSY, {
     polling: true
@@ -44,23 +48,39 @@ const PORT = process.env.PORT || 3000;
 
 const START_TIME = Date.now();
 
-HaTeSY.get("/", (req, res) => {
-    const uptime = Math.floor((Date.now() - START_TIME) / 1000);
+function uptime() {
+    const total = Math.floor((Date.now() - START_TIME) / 1000);
 
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
+
+    return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+HaTeSY.get("/", (req, res) => {
     res.json({
         status: "online",
-        uptime: `${uptime}s`,
+        uptime: uptime(),
         time: new Date().toLocaleString(),
         owner: "SABIR7718"
     });
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-    log("error", "CRITICAL", `Unhandled Rejection at: ${promise} | Reason: ${reason}`);
+    log(
+        "error",
+        "CRITICAL",
+        `Unhandled Rejection at: ${promise} | Reason: ${reason}`
+    );
 });
 
 process.on("uncaughtException", (error) => {
-    log("error", "CRITICAL", `Uncaught Exception: ${error.message}`);
+    log(
+        "error",
+        "CRITICAL",
+        `Uncaught Exception: ${error.message}`
+    );
 });
 
 HaTeSY.listen(PORT, () => {
@@ -87,7 +107,7 @@ function SABIR7718(text) {
         HaTe.push({
             type: "custom_emoji",
             offset,
-            length: 2,
+            length: 1,
             custom_emoji_id: match[1]
         });
 
@@ -103,15 +123,13 @@ function SABIR7718(text) {
 }
 
 SYHaTe.onText(/^\/start$/, async (msg) => {
-    const uptime = Math.floor((Date.now() - START_TIME) / 1000);
-
     await SYHaTe.sendMessage(
         msg.chat.id,
         `✨ <b>PREMIUM EMOJI BOT BY S7</b> ✨
 ──────────────────────────
 
 <blockquote>⏰ <b>Time:</b> ${new Date().toLocaleString()}
-🚀 <b>Uptime:</b> ${uptime}s</blockquote>
+🚀 <b>Uptime:</b> ${uptime()}</blockquote>
 
 📖 <b>USAGE GUIDE</b>
 
@@ -121,27 +139,28 @@ SYHaTe.onText(/^\/start$/, async (msg) => {
 🔹 <b>Target Specific User:</b>
 <code>/emoji [user_id] (emoji)[emoji_id](/emoji) Your Message</code>
 
-💡 <b>Real Example (Click to Copy):</b>
-<code>/emoji me (emoji)5375385315949158491(/emoji) Hello</code>
+💡 <b>Real Example:</b>
+
+<code>/emoji me (emoji)5375385315949158491(/emoji)15 hours of hard work(emoji)5924625196890723131(/emoji)</code>
 
 ──────────────────────────
 <i>Status: Active & Optimized</i> ⚡`, {
-            parse_mode: 'HTML'
+            parse_mode: "HTML"
         }
     );
-
-
 });
 
-SYHaTe.onText(/^\/emoji(?:\s+(.+))?/, async (msg, match) => {
+SYHaTe.onText(/^\/emoji(?:\s+([\s\S]+))?/, async (msg, match) => {
     try {
         const S7HaTe = match[1];
 
         if (!S7HaTe) {
             return SYHaTe.sendMessage(
                 msg.chat.id,
-                `❌ <b>Wrong Usage!</b>\n\n<code>/emoji me (emoji)5375385315949158491(/emoji)Hello</code>`, {
-                    parse_mode: 'HTML'
+                `❌ <b>Wrong Usage!</b>
+
+<code>/emoji me (emoji)5375385315949158491(/emoji)Hello</code>`, {
+                    parse_mode: "HTML"
                 }
             );
         }
@@ -170,12 +189,20 @@ SYHaTe.onText(/^\/emoji(?:\s+(.+))?/, async (msg, match) => {
             }
         );
 
-        log("info", "SYSTEM", `Message sent to ${target}`);
+        log(
+            "info",
+            "SYSTEM",
+            `Message sent to ${target}`
+        );
 
     } catch (e) {
         console.log(e);
 
-        log("error", "SYSTEM", e.message);
+        log(
+            "error",
+            "SYSTEM",
+            e.message
+        );
     }
 });
 
@@ -184,18 +211,40 @@ if (process.env.URL) {
     (async () => {
         try {
             const res = await fetch(process.env.URL);
-            log('info', 'PING', `Pinged: ${process.env.URL} | Status: ${res.status}`);
+
+            log(
+                "info",
+                "PING",
+                `Pinged: ${process.env.URL} | Status: ${res.status}`
+            );
+
         } catch (err) {
-            log('error', 'PING', err.message);
+
+            log(
+                "error",
+                "PING",
+                err.message
+            );
         }
     })();
 
     setInterval(async () => {
         try {
             const res = await fetch(process.env.URL);
-            log('info', 'PING', `Pinged: ${process.env.URL} | Status: ${res.status}`);
+
+            log(
+                "info",
+                "PING",
+                `Pinged: ${process.env.URL} | Status: ${res.status}`
+            );
+
         } catch (err) {
-            log('error', 'PING', err.message);
+
+            log(
+                "error",
+                "PING",
+                err.message
+            );
         }
     }, 5 * 60 * 1000);
 }
