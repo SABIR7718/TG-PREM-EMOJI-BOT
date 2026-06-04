@@ -88,6 +88,7 @@ HaTeSY.listen(PORT, () => {
 });
 
 function SABIR7718(text) {
+
     const S7 = /\(emoji\)(\d+)\(\/emoji\)/g;
 
     let SY = "";
@@ -96,18 +97,19 @@ function SABIR7718(text) {
     let match;
 
     while ((match = S7.exec(text)) !== null) {
+
         const before = text.slice(lastIndex, match.index);
 
         SY += before;
 
-        const offset = [...SY].length;
+        const offset = SY.length;
 
-        SY += "😀";
+        SY += "🧩";
 
         HaTe.push({
             type: "custom_emoji",
             offset,
-            length: 1,
+            length: 2,
             custom_emoji_id: match[1]
         });
 
@@ -123,6 +125,7 @@ function SABIR7718(text) {
 }
 
 SYHaTe.onText(/^\/start$/, async (msg) => {
+
     await SYHaTe.sendMessage(
         msg.chat.id,
         `✨ <b>PREMIUM EMOJI BOT BY S7</b> ✨
@@ -151,10 +154,13 @@ SYHaTe.onText(/^\/start$/, async (msg) => {
 });
 
 SYHaTe.onText(/^\/emoji(?:\s+([\s\S]+))?/, async (msg, match) => {
+
     try {
+
         const S7HaTe = match[1];
 
         if (!S7HaTe) {
+
             return SYHaTe.sendMessage(
                 msg.chat.id,
                 `❌ <b>Wrong Usage!</b>
@@ -173,8 +179,11 @@ SYHaTe.onText(/^\/emoji(?:\s+([\s\S]+))?/, async (msg, match) => {
             args[0] !== "me" &&
             /^-?\d+$/.test(args[0])
         ) {
+
             target = args.shift();
+
         } else if (args[0] === "me") {
+
             args.shift();
         }
 
@@ -196,6 +205,7 @@ SYHaTe.onText(/^\/emoji(?:\s+([\s\S]+))?/, async (msg, match) => {
         );
 
     } catch (e) {
+
         console.log(e);
 
         log(
@@ -209,7 +219,9 @@ SYHaTe.onText(/^\/emoji(?:\s+([\s\S]+))?/, async (msg, match) => {
 if (process.env.URL) {
 
     (async () => {
+
         try {
+
             const res = await fetch(process.env.URL);
 
             log(
@@ -226,10 +238,13 @@ if (process.env.URL) {
                 err.message
             );
         }
+
     })();
 
     setInterval(async () => {
+
         try {
+
             const res = await fetch(process.env.URL);
 
             log(
@@ -246,5 +261,6 @@ if (process.env.URL) {
                 err.message
             );
         }
+
     }, 5 * 60 * 1000);
 }
